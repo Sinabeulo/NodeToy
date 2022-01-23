@@ -1,0 +1,3 @@
+npm i express
+npm i -D  nodemon
+npm i express cookie-parser express-session morgan multer dotenv nunjucks
