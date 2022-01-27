@@ -1,3 +1,18 @@
 npm i express
 npm i -D  nodemon
 npm i express cookie-parser express-session morgan multer dotenv nunjucks
+
+// Sequelize
+npm i sequelize mysql2 sequelize-cli
+npx sequelize init
+
+// 콘솔에서 데이터데이스를 생성합니다.
+npx sequelize db:create
+
+// passport 설치
+npm i passport passport-local passport-kakao bcrypt
+
+
+* Note :
+// vscode html 기본틀 자동 완성 단축키
+ > ! + Tab
