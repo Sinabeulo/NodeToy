@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirToy - Join</title>
+</head>
+<body>
+    <form id="join-form" action="/auth/join" method="post">
+        <div class="input-group">
+            <a>email</a>
+            <input id="join-email" type="email" name="email" required autofocus>
+        </div>
+        <div class="input-group">
+            <a>password</a>
+            <input id="join-password" type="password" name="password" required autofocus>
+        </div>
+        <div class="input-group">
+            <a>nick</a>
+            <input id="join-nick" type="nick" name="nick">
+        </div>
+        <button id="join" type="submit" class="btn">회원가입</button>
+    </form>
+</body>
+</html>
