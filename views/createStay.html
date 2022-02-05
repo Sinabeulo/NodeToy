@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+</head>
+<body>
+    <form id="create-stay-form" action="/CreateStay" method="post">
+        <div class="input">
+            <a>Title</a>
+            <input type="text" id="create-stay-title" name="title" required autofocus/>
+        </div>
+        <div class="input">
+            <a>Content</a>
+            <input type="text" id="create-stay-content" name="content" required autofocus/>
+        </div>
+        <button id="create-stay-btn" type="submit" class="btn">등록</button>
+    </form>
+</body>
+</html>

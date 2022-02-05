@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
@@ -9,13 +9,13 @@ const indexRouter = require('../routes');
 const authRouter = require('../routes/auth');
 const { sequelize } = require("../models");
 const passportConfig = require('../passport');
-const passport = require("passport");
+const passport = require('passport');
 
 /* config() 에서 경로 문제 발생하므로 직접 입력 필요 */
-console.log('process.cwd() : ',process.cwd());      // 현재 작업 디렉토리
-console.log('__dirname : ',__dirname);              // 현재 모듈 js 디렉토리 
+console.log('process.cwd() : ', process.cwd());      // 현재 작업 디렉토리
+console.log('__dirname : ', __dirname);              // 현재 모듈 js 디렉토리 
 //dotenv.config();
-dotenv.config({path:`${__dirname}/.env`});
+dotenv.config({ path: `${__dirname}/.env` });
 
 const app = express();
 
@@ -36,10 +36,10 @@ sequelize.sync({ force: false })
     .catch((err) => {
         console.log(err);
     });
-    
+
 app.use(morgan('dev'));                                     // Nodejs 에서 사용되는 log 관리 미들웨어
 app.use(express.urlencoded({ extended: false }));           // 클라이언트에서 전송한 데이터 중 body 부분을 pasing해준다.
-console.log('process.env.COOKIE_SECRET : ' ,process.env.COOKIE_SECRET);
+console.log('process.env.COOKIE_SECRET : ', process.env.COOKIE_SECRET);
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
     resave: false,
@@ -82,7 +82,6 @@ app.use((err, req, res, next) => {
         res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
         res.status(err.status || 500);
         res.render('error');
-        //res.
     }
 });
 
