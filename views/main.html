@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <!-- <title>AirToy - 로그인</title> -->
     <title>{{title}}</title>
 </head>
+
 <body>
     {% if user %}
     <a>{{'안녕하세요! ' + user.nick + '님'}}</a>
@@ -17,14 +19,64 @@
     <a>{{'로그인을 해주세요'}}</a>
     <!-- form 부분 없으면 post 메서드 발생 안함 -->
     <form id="login-form" action="auth/login" method="post">
-        <input id="id_text" type="text" name="email"> 아이디
+        <input id="id_text" type="text" name="email" value="abc@email.com" required> 아이디
         <br />
-        <input id="pw_text" type="password" name="password" required> 비밀번호
+        <input id="pw_text" type="password" name="password" value="1234" required> 비밀번호
         <button id="login" class="btn" type="submit">로그인</button>
         <div>
             <a id="join" href="/join" class="btn">회원가입</a>
         </div>
     </form>
     {% endif %}
+
+    {% if user %}
+    <!-- <form id="stayinglist-form" action="getStayingList" method="get"> -->
+    <form id="stayinglist-form" action="getList" method="get"></form>
+        <a href="/createStay">등록</a>
+        {% for staying in stayinglist %}
+        <div class="staying" style="border:1px solid;">
+            <!-- <form id="staying-form" action="toReservation" method="post"> -->
+                <a class="staying-User-id">HostUser: {{staying.HostUser}}</a>
+                {% if user.id != staying.HostUser %}
+                <!-- form 영향으로 GET /reservation.css 호출함 -->
+                <a class="reservation-btn" href="/reservation/{{staying.id}}">예약</a>
+                <!-- <button class="reservation-btn">예약</button> -->
+                <!-- <input type="button" onclick="OnClickReservation()" value="예약"> -->
+                <!-- <input type="button" value="예약"> -->
+                <!-- 선택한 정보 전달하는 기능 필요 -->
+                {% endif %}
+                <br />
+                <a class="staying-User-title">Title: {{staying.Title}}</a>
+                <br />
+                <a class="staying-User-content">Content: {{staying.Content}}</a>
+                <!-- <a value="{{staying.Title}}" class="staying-User-title"/>
+            <a value="{{staying.Content}}" class="staying-User-content"/> -->
+            <!-- </form> -->
+        </div>
+        {% endfor %}
+        <br/>
+        <a>예약 목록</a>
+        <br/>
+        {% for reservation in reservationlist %}
+        <div class="reservation" style="border: 1px solid;">
+            <a class="reservation-HostUser-Nick">HostUser : {{reservation.hostUser}}</a>
+            <a class="reservation-GuestUser-Nick">GuestUser : {{reservation.guestUser}}</a>
+            <a class="reservation-FromDate">FromDate : {{reservation.fromDate.toISOString().split('T')[0]}}</a>
+            <a class="reservation-Todate">ToDate : {{reservation.toDate.toISOString().split('T')[0]}}</a>
+        </div>
+        {% endfor %}
+    </form>
+
+    {% else %}
+
+    <h1>Welcome To NodeToy</h1>
+    
+    {% endif %}
+    <!-- <script>
+        function OnClickReservation() {
+            window.location = "/reservation";
+        }
+    </script> -->
 </body>
+
 </html>

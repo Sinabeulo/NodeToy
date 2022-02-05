@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="/public/reservation.css"> -->
+    <title>{{title}}</title>
+    <!-- <style>
+        div{
+            border: 1px solid black;
+            width: 40%;
+            padding: 1%;
+        }
+        #div1{
+            float: left;
+            border: 1px solid Red !important;
+            height: 100%;
+        }
+        #div2{
+            float: left;
+            border: 1px solid blue !important;
+        }
+        #div2-1{
+            float: top;
+            border: 1px solid purple !important;
+            height: 50%;
+        }
+        #div2-2{
+            float: bottom;
+            border: 1px solid green !important;
+            height: 50%;
+        }
+    </style> -->
+    <style>
+        #div1 {
+            float: left;
+            border: 1px solid blue;
+            width: 30%;
+        }
+
+        #div2 {
+            float: left;
+            border: 1px solid red;
+            width: 65%;
+        }
+
+        #div3 {
+            float: left;
+            border: 1px solid blue;
+            width: 100%;
+            height: 400px;
+            overflow-y: scroll; 
+        }
+
+        #div4 {
+            float: left;
+            border: 1px solid red;
+            width: 100%;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<!-- <body style="background-color: blueviolet;"> -->
+<body>
+    <div class="container">
+        <div class="col" id="div1">
+            <a>Title</a>
+            <br />
+            <a>Content</a>
+            <br />
+            <a>From Date</a>
+            <br />
+            <a>To Date</a>
+        </div>
+        <form id="reservation-form" action="/doReservation" method="post" name="reservationForm">
+            <div class="col" id="div2">
+                <input type="hidden" value="{{hostUser}}">
+                <a>{{title}}</a>
+                <br />
+                <a>{{content}}</a>
+                <br />
+                <input type="date" id="reservation-from-date" name="fromDate" min="2022-01-01" max="2100-01-01">
+                <br />
+                <input type="date" id="reservation-to-date" name="toDate" min="2022-01-01" max="2100-01-01">
+            </div>
+            <div class="row" id="div3">
+                {% for reservation in reservationlist %}
+                <div class="reserved-item" style="border: 1px solid;">
+                    <p>Reserved between from </p>
+                    <!-- 날짜 형식 수정 yyyy-mm-dd -->
+                    <label class="reserved-fromdate">{{reservation.fromDate.toISOString().split('T')[0]}}</label>
+                    <p> To </p>
+                    <label class="reserved-todate">{{reservation.toDate.toISOString().split('T')[0]}}</label>
+                    <br />
+                    <p>Hosted by : </p>
+                    <label class="reserved-hostuser">{{reservation.hostUser}}</label>
+                    <br />
+                    <p>Guest : </p>
+                    <label class="reserved-guestuser">{{reservation.guestUser}}</label>
+                    <!-- <label>Reserved from {{fromDate}} to {{toDate}}. Host : {{hostUser}} , Guest : {{guestUser}} </label> 취소기능 추가 필요 [취소] -->
+                </div>
+                {% endfor %}
+            </div>
+            <div class="row" id="div4">
+
+                <!-- <input type="submit" id="reservation-btn" name="reservation" value="예약하기"> -->
+                <!-- 지금은 바로 예약이 되지만 호스트의 승인 후 예약이 성사되도록 수정 필요함 -->
+                <button type="submit" onclick="checkDate()">예약하기</button>
+
+            </div>
+        </form>
+    </div>
+    <script>
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth() > 10 ? today.getMonth() : '0' + today.getMonth();
+        const day = today.getDay() > 10 ? today.getDay() : '0' + today.getDay();
+        const yyyymmdd = `${year}-${month}-${day}`;
+
+        window.onload = () => {
+            console.log(today);
+            document.getElementById('reservation-from-date').value = yyyymmdd;//today;
+            document.getElementById('reservation-to-date').value = yyyymmdd;//today;
+        };
+
+        // 찾지 못함
+        // const fromdate = document.querySelector('.fromDate');
+        // const todate = document.querySelector('.toDate');
+
+        const fromdate = document.getElementById('reservation-from-date');
+        const todate = document.getElementById('reservation-to-date');
+        const reservedFromdateList = document.querySelectorAll('.reserved-fromdate');//document.getElementById('reserved-fromdate');
+        const reservedTodateList = document.querySelectorAll('.reserved-todate');//document.getElementById('reserved-todate');
+
+        console.log(`reservedFromdateList ${reservedFromdateList} reservedTodateList ${reservedTodateList}`);
+
+        const dateTextList = new Array();
+        reservedFromdateList.forEach(fromdate => {
+
+            if(!dateTextList.includes(fromdate.outerText)) 
+                dateTextList.push(fromdate.outerText);
+        });
+
+        reservedTodateList.forEach(todate=>{
+
+            if(!dateTextList.includes(todate.outerText))
+                dateTextList.push(todate.outerText);
+        });
+
+        let selectedFromDate = yyyymmdd;
+        let selectedToDate = yyyymmdd;
+
+
+        console.log(`selectedFromDate : ${selectedFromDate} , selectedToDate : ${selectedToDate}`);
+
+        // 수정 이벤트 리스너 추가
+        fromdate.addEventListener('change', (evnet) => {
+            // evnet [Object]
+            console.log('fromdate : ' + event.target.value);
+            selectedFromDate = event.target.value;
+        });
+
+        todate.addEventListener('change', (evnet) => {
+            console.log('todate : ' + event.target.value);
+            selectedToDate = event.target.value;
+        });
+
+        let cannotRedirction = false;
+        function checkDate() {
+            console.log('checkDate');
+            // console.log(`selectedFromDate : ${selectedFromDate} , selectedToDate : ${selectedToDate}`);
+
+
+            dateTextList.forEach(date => {
+                if(cannotRedirction) return;
+                if (date === selectedToDate || date === selectedFromDate 
+                    || (date >= selectedFromDate && date <= selectedToDate)) {
+                    cannotRedirction = true;
+                    alert('이미 예약이 되어있습니다.');
+                    return;
+                }
+            });
+
+            if(cannotRedirction) return;
+
+            if (selectedFromDate < yyyymmdd || selectedToDate < yyyymmdd) {
+                alert('오늘 날짜보다 예전날짜는 예약할 수 없습니다.');
+                cannotRedirction = true;
+                return;
+            }
+            else if (selectedFromDate === selectedToDate) {
+                alert('같은날로 지정할 수 없습니다.');
+                cannotRedirction = true;
+                return;
+            }
+            else if (selectedFromDate > selectedToDate) {
+                alert('todate 가 formdate 보다 이후 날짜일 수 없습니다.');
+                cannotRedirction = true;
+                return;
+            }
+            cannotRedirction = false;
+        }
+
+        const reservationForm = document.getElementById('reservation-form');
+
+        reservationForm.addEventListener('click', (event) => {
+            console.log('eventListener');
+            // console.log('eventListener condition : ' + cannotRedirction);
+            if (cannotRedirction) {
+                event.preventDefault();         // 페이지가 중단되어 다른 기능이 멈춤 (화면 전환 막는 부분은 성공)
+                window.location.reload();       // 현제 페이지 새로고침
+            }
+        })
+
+    </script>
+</body>
+
+</html>
